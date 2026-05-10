@@ -14,6 +14,7 @@ from crewai import Agent
 from crewai_tools import ScrapeWebsiteTool, SerperDevTool
 
 from crew.llm_factory import create_llms
+from tools.custom_tools import CitationCheckerTool
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +92,7 @@ def create_agents():
         goal=agents_config["editor"]["goal"],
         backstory=agents_config["editor"]["backstory"],
         llm=llms["editor"],
+        tools=[CitationCheckerTool()],
         verbose=True,
         allow_delegation=False,
         max_execution_time=300,

@@ -9,5 +9,6 @@ supabase==2.15.1
 python-jose[cryptography]==3.4.0
 slowapi==0.1.9
 httpx==0.28.1
+requests==2.33.1
 PyYAML==6.0.2
 litellm==1.78.0
