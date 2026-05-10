@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../hooks/useAuth";
 import { LogIn, Loader2, AlertCircle } from "lucide-react";
 
 export function LoginPage() {
