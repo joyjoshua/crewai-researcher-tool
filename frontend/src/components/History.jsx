@@ -1,13 +1,48 @@
 import { useEffect, useState } from "react";
 import api from "../lib/api";
-import { FileText, Clock } from "lucide-react";
+import { AlertCircle, FileText, Clock } from "lucide-react";
 
 export function History({ onSelect }) {
   const [jobs, setJobs] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get("/api/reports/history").then((res) => setJobs(res.data));
+    let cancelled = false;
+    api
+      .get("/api/reports/history")
+      .then((res) => {
+        if (!cancelled) setJobs(res.data);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        const detail =
+          err.response?.data?.detail ??
+          err.response?.data?.postgres ??
+          err.message ??
+          "Failed to load history";
+        const msg = typeof detail === "string" ? detail : JSON.stringify(detail);
+        setError(msg);
+        setJobs([]);
+        console.error("History fetch failed:", err.response?.status, detail);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  if (error) {
+    return (
+      <div className="w-full max-w-4xl mx-auto mt-10 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+        <div className="flex gap-2">
+          <AlertCircle className="w-5 h-5 shrink-0 text-amber-700" aria-hidden />
+          <div>
+            <p className="font-medium text-amber-900">Could not load past reports</p>
+            <p className="mt-1 text-amber-800/90">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (jobs.length === 0) return null;
 

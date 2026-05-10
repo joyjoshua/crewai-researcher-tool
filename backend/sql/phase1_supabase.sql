@@ -37,6 +37,17 @@ create policy "Users see own jobs"
     on public.jobs for select
     using (auth.uid() = user_id);
 
+-- Direct client/API access as an authenticated Supabase user (optional).
+-- The FastAPI backend should still use SUPABASE_SERVICE_ROLE_KEY (RLS bypass).
+create policy "Users insert own jobs"
+    on public.jobs for insert
+    with check (auth.uid() = user_id);
+
+create policy "Users update own jobs"
+    on public.jobs for update
+    using (auth.uid() = user_id)
+    with check (auth.uid() = user_id);
+
 -- Service role (backend) can do everything — no policy needed,
 -- service_role key bypasses RLS.
 

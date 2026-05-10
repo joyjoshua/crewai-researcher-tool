@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from postgrest.exceptions import APIError as PostgrestAPIError
 from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -27,7 +28,7 @@ from starlette.responses import JSONResponse
 from crew.callbacks import create_event_queue, make_step_callback, make_task_callback
 from crew.events import AgentEvent, EventType
 from crew.flow import ResearchReportFlow
-from db import supabase
+from db import SupabaseConfigError, supabase
 from middleware.auth import get_current_user, get_current_user_sse
 
 _BACKEND_ROOT = Path(__file__).resolve().parent
@@ -78,6 +79,52 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Research Report Generator", lifespan=lifespan)
 app.state.limiter = limiter
+
+
+@app.exception_handler(SupabaseConfigError)
+async def supabase_config_error_handler(request: Request, exc: SupabaseConfigError):
+    logger.error("Supabase configuration error: %s", exc)
+    return JSONResponse(
+        status_code=503,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(PostgrestAPIError)
+async def postgrest_error_handler(request: Request, exc: PostgrestAPIError):
+    logger.error(
+        "PostgREST error code=%s message=%s hint=%s details=%s",
+        exc.code,
+        exc.message,
+        exc.hint,
+        exc.details,
+    )
+    hint_tail = ""
+    msg = exc.message or ""
+    if (
+        "row-level security" in msg.lower()
+        or (exc.details and "row-level security" in exc.details.lower())
+    ):
+        hint_tail = (
+            " Backend must use SUPABASE_SERVICE_ROLE_KEY (service_role), not the "
+            "anon key. See backend/.env and Supabase → Settings → API."
+        )
+    return JSONResponse(
+        status_code=503,
+        content={
+            "detail": (
+                f"{exc.message or 'Database request failed'} (code={exc.code!s}). "
+                f"{exc.hint or ''}{exc.details or ''}"
+                f"{hint_tail}"
+            ).strip(),
+            "postgres": {
+                "code": exc.code,
+                "message": exc.message,
+                "hint": exc.hint,
+                "details": exc.details,
+            },
+        },
+    )
 
 
 @app.exception_handler(RateLimitExceeded)

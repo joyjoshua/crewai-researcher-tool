@@ -11,8 +11,10 @@ api.interceptors.request.use(async (config) => {
     data: { session },
   } = await supabase.auth.getSession();
 
-  if (session?.access_token) {
-    config.headers.Authorization = `Bearer ${session.access_token}`;
+  const token = session?.access_token;
+  if (token) {
+    // Axios 1.x: set() works with AxiosHeaders reliably in the browser.
+    config.headers.set("Authorization", `Bearer ${token}`);
   }
   return config;
 });
