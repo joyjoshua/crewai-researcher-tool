@@ -1,0 +1,13 @@
+crewai==1.14.4
+crewai-tools==1.14.4
+fastapi==0.115.12
+uvicorn==0.34.2
+sse-starlette==2.2.1
+python-dotenv==1.2.2
+pydantic==2.12.4
+supabase==2.15.1
+python-jose[cryptography]==3.4.0
+slowapi==0.1.9
+httpx==0.28.1
+PyYAML==6.0.2
+litellm==1.78.0

@@ -1,0 +1,68 @@
+planning_task:
+  description: >
+    Analyse the topic "{topic}" and create a detailed research plan.
+    Break it into 5–7 focused sub-questions that collectively cover the
+    topic comprehensively. For each sub-question, suggest what type of
+    source would be most useful (academic, news, industry report, government data).
+  expected_output: >
+    A structured research plan with:
+    - 5–7 numbered sub-questions
+    - For each: the sub-question text and recommended source type
+    - A brief note on any potential challenges in researching this topic
+
+research_task:
+  description: >
+    Execute the research plan for "{topic}". For each sub-question, search
+    the web and gather relevant information. Collect facts, statistics,
+    expert quotes, and source URLs. Aim for 3–5 key findings per sub-question.
+    Note the credibility level of each source.
+  expected_output: >
+    A comprehensive research document with:
+    - Findings grouped by sub-question (3–5 bullet points each)
+    - Source URLs for every finding
+    - Notable statistics or quotes
+    - A credibility assessment for each source (high/medium/low)
+
+analysis_task:
+  description: >
+    Review all the raw research gathered on "{topic}". Identify the most
+    important themes, patterns, and insights. Cross-reference findings
+    across sub-questions. Filter out weak or poorly sourced information.
+    Highlight any contradictions or gaps in the research.
+  expected_output: >
+    A synthesised analysis document with:
+    - 5–10 key insights, ranked by importance
+    - Supporting evidence for each insight (with source references)
+    - Any notable contradictions or data gaps identified
+    - A brief assessment of overall research quality
+
+writing_task:
+  description: >
+    Write a full research report on "{topic}" based on the analysis provided.
+    Structure it with: Executive Summary (200 words), Introduction, Findings
+    (one section per key theme), Analysis & Discussion, Conclusion &
+    Recommendations. Use markdown formatting with headers. The report should
+    be 1500–3000 words, clear and engaging.
+  expected_output: >
+    A complete markdown-formatted research report with:
+    - Executive Summary
+    - Introduction
+    - Findings (multiple sections)
+    - Analysis & Discussion
+    - Conclusion & Recommendations
+    - Sources / References section
+    Target length: 1500–3000 words.
+
+editing_task:
+  description: >
+    Review the report draft on "{topic}". Check for:
+    1. Factual accuracy — are all claims supported by the research?
+    2. Logical flow — does the narrative make sense from start to finish?
+    3. Grammar and style — fix any errors, improve readability
+    4. Completeness — are there gaps that should be addressed?
+    5. Formatting — ensure consistent markdown formatting
+    Return the final polished version of the report.
+  expected_output: >
+    A publication-ready research report with all issues resolved.
+    The report should be clean, accurate, well-structured markdown
+    ready for delivery.
