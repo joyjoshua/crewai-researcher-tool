@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { API_BASE } from "../lib/api";
 import { supabase } from "../lib/supabase";
 
 /**
@@ -33,7 +34,8 @@ export function useAgentStream(jobId) {
         return;
       }
 
-      const url = `/api/report/stream/${jobId}?token=${encodeURIComponent(token)}`;
+      const path = `/api/report/stream/${jobId}?token=${encodeURIComponent(token)}`;
+      const url = API_BASE ? `${API_BASE}${path}` : path;
       const source = new EventSource(url);
       sourceRef.current = source;
 
